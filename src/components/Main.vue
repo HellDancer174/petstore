@@ -66,11 +66,12 @@
 var APP_LOG_LIFECYCLE_EVENTS = true;
 //<strong/> - жирный текст
 import MyHeader from "./Header.vue";
+import { mapGetters } from "vuex"; //импорт вспомогательной функции
 export default {
   name: "imain",
   data() {
     return {
-      products: {},
+/*       products: {}, */
       cart: [],
     };
   },
@@ -108,6 +109,9 @@ export default {
     cartItemCount() {
       return this.cart.length || "";
     },
+    ...mapGetters([ // не забудь импортировать вспом функцию
+      "products"
+    ]),
     sortedProducts() {
       if (this.products.length > 0) {
         let productsArray = this.products.slice(0);
@@ -154,10 +158,7 @@ export default {
   }, //#B
   created: function () {
     //#C
-    axios.get("/static/products.json").then((response) => {
-      this.products = response.data.products;
-      console.log(this.products);
-    });
+    this.$store.dispatch("initStore");
   }, //#C
   beforeMount: function () {
     //#D
