@@ -9,8 +9,11 @@
           </figure>
         </div>
         <div class="col-md-6 col-md-offset-0 description">
-          <router-link tag="h1" v-bind:to="{name:'Id', params: {id: product.id}}">
-            {{product.title}}
+          <router-link
+            tag="h1"
+            v-bind:to="{ name: 'Id', params: { id: product.id } }"
+          >
+            {{ product.title }}
           </router-link>
           <p v-html="product.description"></p>
           <p class="price">
@@ -26,18 +29,23 @@
           <button v-else disabled="true" class="btn btn-primary btn-lg">
             Add to cart
           </button>
-          <span
-            class="inventory-message"
-            v-if="product.availableInventory - cartCount(product.id) === 0"
-            >All Out!
-          </span>
-          <span
-            class="inventory-message"
-            v-else-if="product.availableInventory - cartCount(product.id) < 5"
-          >
-            Only {{ product.availableInventory - cartCount(product.id) }} left!
-          </span>
-          <span class="inventory-message" v-else>Buy Now! </span>
+          <transition name="bounce" mode="out-in"> <!-- Переход All Out-->
+            <span
+              class="inventory-message"
+              v-if="product.availableInventory - cartCount(product.id) === 0"
+              key="0" >All Out! <!-- key помогает отличить несколько элементов с одинаковыми тегами-->
+            </span>
+            <span
+              class="inventory-message"
+              v-else-if="product.availableInventory - cartCount(product.id) < 5"
+            key=""> <!-- пустой key препятствует анимации-->
+              Only
+              {{ product.availableInventory - cartCount(product.id) }} left!
+            </span>
+            <span class="inventory-message" 
+            v-else 
+            key="">Buy Now! </span> <!-- пустой key препятствует анимации-->
+          </transition>
           <div class="rating">
             <span
               v-bind:class="{ 'rating-active': checkRating(n, product) }"
@@ -195,3 +203,31 @@ export default {
   }, //#I
 };
 </script>
+
+<style scoped>
+.bounce-enter-active {
+  animation: shake 0.72s cubic-bezier(0.37, 0.07, 0.19, 0.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
+@keyframes shake {
+  10%, 90% {
+    color: red;
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    color: red;
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+</style>
